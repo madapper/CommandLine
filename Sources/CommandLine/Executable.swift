@@ -1,6 +1,6 @@
 import Foundation
 
-public struct CommandLine {
+public struct Executable {
 
     let command: Command
     let arguments: [String]
@@ -19,7 +19,7 @@ public struct CommandLine {
     }
 }
 
-public typealias CommandLineResponse = (output: [String], error: [String], exitCode: Int32)
+public typealias ExecutableResponse = (output: [String], error: [String], exitCode: Int32)
 
 extension Pipe {
     var output: [String] {
@@ -40,7 +40,7 @@ extension Process {
     var readabilityHandler: ((FileHandle) -> ()) { return { print(String(data: $0.availableData, encoding: .utf8) ?? "") } }
     
     
-    public func execute(asynchronously: Bool = false) -> CommandLineResponse? {
+    public func execute(asynchronously: Bool = false) -> ExecutableResponse? {
         if asynchronously {
             return executeAsync()
         }else {
@@ -48,14 +48,14 @@ extension Process {
         }
     }
     
-    private func executeSync() -> CommandLineResponse {
+    private func executeSync() -> ExecutableResponse {
         launch()
         waitUntilExit()
         
-        return CommandLineResponse(output: outputPipe?.output ?? [], error: errorPipe?.output ?? [], exitCode: terminationStatus)
+        return ExecutableResponse(output: outputPipe?.output ?? [], error: errorPipe?.output ?? [], exitCode: terminationStatus)
     }
     
-    private func executeAsync() -> CommandLineResponse? {
+    private func executeAsync() -> ExecutableResponse? {
         outputPipe?.fileHandleForReading.readabilityHandler = readabilityHandler
         launch()
         waitUntilExit()
