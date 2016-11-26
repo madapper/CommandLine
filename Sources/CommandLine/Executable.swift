@@ -2,10 +2,10 @@ import Foundation
 
 public struct Executable {
 
-    let command: Command
-    let arguments: [String]
+    public let command: Command
+    public let arguments: [String]
     
-    var process: Process {
+    public var process: Process {
         let process = Process()
         process.launchPath = command.launchPath
         process.standardOutput = Pipe()
@@ -13,7 +13,7 @@ public struct Executable {
         return process
     }
     
-    init(command: Command, arguments: [String] = []) {
+    public init(command: Command, arguments: [String] = []) {
         self.command = command
         self.arguments = arguments
     }
@@ -22,22 +22,22 @@ public struct Executable {
 public typealias ExecutableResponse = (output: [String], error: [String], exitCode: Int32)
 
 extension Pipe {
-    var output: [String] {
+    public var output: [String] {
         return String(data: fileHandleForReading.readDataToEndOfFile(), encoding: .utf8)?.trimmingCharacters(in: .newlines).components(separatedBy: .newlines) ?? []
     }
 }
 
 extension Process {
     
-    var outputPipe: Pipe? {
+    public var outputPipe: Pipe? {
         return standardOutput as? Pipe
     }
     
-    var errorPipe: Pipe? {
+    public var errorPipe: Pipe? {
         return standardError as? Pipe
     }
     
-    var readabilityHandler: ((FileHandle) -> ()) { return { print(String(data: $0.availableData, encoding: .utf8) ?? "") } }
+    public var readabilityHandler: ((FileHandle) -> ()) { return { print(String(data: $0.availableData, encoding: .utf8) ?? "") } }
     
     
     public func execute(asynchronously: Bool = false) -> ExecutableResponse? {

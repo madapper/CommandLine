@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol Command {
+public protocol Command {
     var launchPath: String { get }
     var rawValue: String { get }
     var description: String { get }
