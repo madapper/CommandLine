@@ -1,9 +1,8 @@
 import Foundation
 
-public protocol Command {
+public protocol Command: Argument {
     var launchPath:String? { get }
     var prependedArguments: [String] { get }
-    var rawValue: String { get }
     var postValue: [String] { get }
     var description: String { get }
 }
