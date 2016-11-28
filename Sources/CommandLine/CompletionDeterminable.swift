@@ -1,13 +1,18 @@
-//
-//  CompletionDeterminable.swift
-//  Perfect
-//
-//  Created by Paul Napier on 28/11/16.
-//
-//
-
 import Foundation
 
 public protocol CompletionDeterminable {
     var isComplete: Bool { get }
+    static var all: [CompletionDeterminable] { get }
+    static var completed: [CompletionDeterminable] { get }
+    static var remaining: [CompletionDeterminable] { get }
+}
+
+extension CompletionDeterminable {
+    public static var completed: [CompletionDeterminable] {
+        return all.filter{ $0.isComplete }
+    }
+    
+    public static var remaining: [CompletionDeterminable] {
+        return all.filter{ !$0.isComplete }
+    }
 }
