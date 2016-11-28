@@ -20,9 +20,16 @@ public struct Executable {
         return [command.rawValue] + arguments.map{ $0.rawValue }
     }
     
+    public var fullCommandStrings: [String] {
+        return command.prependedArguments + argumentStrings
+    }
+    
     public var process: Process {
         let process = Process.standard
-        process.arguments = argumentStrings
+        if let launchPath = command.launchPath {
+            process.launchPath = launchPath
+        }
+        process.arguments = fullCommandStrings
         return process
     }
     
@@ -39,11 +46,10 @@ var processCount = 0
 public extension Array where Element: ChainExecutable {
     
     @discardableResult
-    func execute(asynchronously: Bool = false, debug: Bool = false) -> ExecutableResponse?{
+    func execute(asynchronously: Bool = false, debug: Bool = false) -> ExecutableResponse? {
         let fileManager = FileManager.default
-        let fileName = "chain.sh"
-        var string = ""
-        forEach{ string += $0.argumentStrings.joined(separator: " ") + ";" }
+        let fileName = "temp.sh"
+        let string = map{ $0.argumentStrings.joined(separator: " ")}.joined(separator: ";")
         let data = string.data(using: .utf8)
         let documentsPath = fileManager.currentDirectoryPath
         let filePath = documentsPath + "/" + fileName
@@ -52,6 +58,7 @@ public extension Array where Element: ChainExecutable {
         process.launchPath = "/bin/sh"
         process.arguments = [filePath]
         let output = process.execute(asynchronously: asynchronously, debug: debug)
+        print(filePath)
         try? fileManager.removeItem(atPath: filePath)
         return output
     }
