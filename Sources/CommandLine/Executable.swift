@@ -1,5 +1,10 @@
 import Foundation
 
+public protocol ExecutableDelegate {
+    func didBeginProcess(process: Process)
+    func didEndProcess(process: Process)
+}
+
 public struct Executable {
     
     public let command: Command
@@ -35,7 +40,7 @@ var processCount = 0
 public extension Array where Element: ChainExecutable {
     
     @discardableResult
-    func execute(asynchronously: Bool = false, debug: Bool = false) -> ExecutableResponse? {
+    func execute(asynchronously: Bool = false, debug: Bool = false, delegate: ExecutableDelegate? = nil) -> ExecutableResponse? {
         let fileManager = FileManager.default
         let fileName = "temp.sh"
         let string = map{ $0.argumentStrings.joined(separator: " ")}.joined(separator: ";")
@@ -46,8 +51,7 @@ public extension Array where Element: ChainExecutable {
         let process = Process.standard
         process.launchPath = "/bin/sh"
         process.arguments = [filePath]
-        let output = process.execute(asynchronously: asynchronously, debug: debug)
-        print(filePath)
+        let output = process.execute(asynchronously: asynchronously, debug: debug, delegate: delegate)
         try? fileManager.removeItem(atPath: filePath)
         return output
     }
@@ -82,28 +86,32 @@ extension Process {
     private var readabilityHandler: ((FileHandle) -> ()) { return { print(String(data: $0.availableData, encoding: .utf8) ?? "") } }
     
     @discardableResult
-    public func execute(asynchronously: Bool = false, debug: Bool = false) -> ExecutableResponse? {
+    public func execute(asynchronously: Bool = false, debug: Bool = false, delegate: ExecutableDelegate? = nil) -> ExecutableResponse? {
         if let launchPath = launchPath, debug {
             let args = arguments?.joined(separator: " ") ?? ""
             print("Executing: \(launchPath) \(args)")
         }
         if asynchronously {
-            return executeAsync()
+            return executeAsync(delegate: delegate)
         }else {
-            return executeSync()
+            return executeSync(delegate: delegate)
         }
     }
     
-    private func executeSync() -> ExecutableResponse {
+    private func executeSync(delegate: ExecutableDelegate? = nil) -> ExecutableResponse {
         launch()
+        delegate?.didBeginProcess(process: self)
         waitUntilExit()
+        delegate?.didEndProcess(process: self)
         return ExecutableResponse(output: outputPipe?.output ?? [], error: errorPipe?.output ?? [], exitCode: terminationStatus)
     }
     
-    private func executeAsync() -> ExecutableResponse? {
+    private func executeAsync(delegate: ExecutableDelegate? = nil) -> ExecutableResponse? {
         outputPipe?.fileHandleForReading.readabilityHandler = readabilityHandler
         launch()
+        delegate?.didBeginProcess(process: self)
         waitUntilExit()
+        delegate?.didEndProcess(process: self)
         return nil
     }
 }
