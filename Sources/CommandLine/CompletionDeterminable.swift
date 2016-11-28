@@ -8,6 +8,6 @@
 
 import Foundation
 
-protocol CompletionDeterminable {
+public protocol CompletionDeterminable {
     var isComplete: Bool { get }
 }
