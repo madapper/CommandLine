@@ -35,28 +35,6 @@ public struct Executable {
 
 extension Executable: ChainExecutable {}
 
-var processCount = 0
-
-public extension Array where Element: ChainExecutable {
-    
-    @discardableResult
-    func execute(asynchronously: Bool = false, debug: Bool = false, delegate: ExecutableDelegate? = nil) -> ExecutableResponse? {
-        let fileManager = FileManager.default
-        let fileName = "temp.sh"
-        let string = map{ $0.argumentStrings.joined(separator: " ")}.joined(separator: ";")
-        let data = string.data(using: .utf8)
-        let documentsPath = fileManager.currentDirectoryPath
-        let filePath = documentsPath + "/" + fileName
-        fileManager.createFile(atPath: filePath, contents: data, attributes: nil)
-        let process = Process.standard
-        process.launchPath = "/bin/sh"
-        process.arguments = [filePath]
-        let output = process.execute(asynchronously: asynchronously, debug: debug, delegate: delegate)
-        try? fileManager.removeItem(atPath: filePath)
-        return output
-    }
-}
-
 public typealias ExecutableResponse = (output: [String], error: [String], exitCode: Int32)
 
 extension Pipe {

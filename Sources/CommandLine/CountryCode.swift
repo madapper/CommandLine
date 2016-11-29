@@ -1,11 +1,3 @@
-//
-//  CountryCode.swift
-//  Perfect
-//
-//  Created by Paul Napier on 29/11/16.
-//
-//
-
 import Foundation
 
 public enum CountryCode {

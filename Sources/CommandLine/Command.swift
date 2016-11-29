@@ -8,11 +8,21 @@ public protocol Command: Argument {
 }
 
 extension Command {
-    var launchPath: String? {
+    public var launchPath: String? {
         return nil
     }
     
-    var prependedArguments: [String] {
+    public var prependedArguments: [String] {
         return []
+    }
+    
+    public var postValue: [String] {
+        return []
+    }
+}
+
+extension String: Command {
+    public var rawValue: String {
+        return self
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol CompletionDeterminable {
+public protocol CompletionDeterminable: Command {
     var isComplete: Bool { get }
     static var all: [CompletionDeterminable] { get }
     static var completed: [CompletionDeterminable] { get }
