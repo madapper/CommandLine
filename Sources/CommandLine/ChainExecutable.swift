@@ -31,10 +31,10 @@ public extension Array where Element: ChainExecutable {
     }
     
     @discardableResult
-    func execute(asynchronously: Bool = false, debug: Bool = false, delegate: ExecutableDelegate? = nil) -> ExecutableResponse? {
+    func execute(asynchronously: Bool = false, debug: Bool = false, lanchPath: String = "/bin/sh", delegate: ExecutableDelegate? = nil) -> ExecutableResponse? {
         let file = build(scriptName: "temp")
         let process = Process.standard
-        process.launchPath = "/bin/sh"
+        process.launchPath = lanchPath
         process.arguments = [file]
         let execution = process.execute(asynchronously: asynchronously, debug: debug, delegate: delegate)
         try? fileManager.removeItem(atPath: file)
