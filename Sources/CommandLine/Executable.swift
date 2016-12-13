@@ -53,11 +53,15 @@ extension Process {
         return process
     }
     
-    private var outputPipe: Pipe? {
+    internal var inputPipe: Pipe? {
+        return standardInput as? Pipe
+    }
+    
+    internal var outputPipe: Pipe? {
         return standardOutput as? Pipe
     }
     
-    private var errorPipe: Pipe? {
+    internal var errorPipe: Pipe? {
         return standardError as? Pipe
     }
     
