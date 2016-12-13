@@ -17,7 +17,7 @@ public struct PipeExecutable: ChainExecutable {
         return [command.rawValue] + arguments.map{ $0.rawValue } + command.postValue
     }
     
-    private var executables: [Executable] {
+    internal var executables: [Executable] {
         return [Executable(command: command, arguments: arguments)]
     }
     

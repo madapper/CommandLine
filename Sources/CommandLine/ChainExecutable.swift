@@ -18,7 +18,7 @@ public extension Array where Element: ChainExecutable {
     }
     
     var output: String {
-        return map{ $0.argumentStrings.joined(separator: " ")}.joined(separator: ";\n")
+        return map{ $0.argumentStrings.joined(separator: " ")}.joined(separator: ";\n") + ";"
     }
     
     @discardableResult
