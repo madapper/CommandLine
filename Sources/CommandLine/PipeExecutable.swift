@@ -32,6 +32,6 @@ public struct PipeExecutable: ChainExecutable {
     
     @discardableResult
     public func execute(asynchronously: Bool = false, debug: Bool = false, lanchPath: String = "/bin/sh", delegate: ExecutableDelegate? = nil) -> ExecutableResponse? {
-        return executables.execute(asynchronously: asynchronously, debug: debug, lanchPath: lanchPath, delegate: delegate)
+        return executables.execute(asynchronously: asynchronously, debug: debug, launchPath: lanchPath, delegate: delegate)
     }
 }
